@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+      font-family: Arial, sans-serif;
+    }
+
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 600px;
+      width: 90%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rose-wrapper {
+      position: relative;
+      margin: 20px 0;
+    }
+
+    .rose {
+      font-size: 100px;
+      animation: float 3s infinite ease-in-out;
+      text-shadow: 2px 2px 8px rgba(255, 0, 0, 0.3);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+    }
+
+    .rose-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(255,0,0,0.1) 0%, rgba(255,0,0,0) 70%);
+      border-radius: 50%;
+      animation: glow 2s infinite;
+    }
+
+    @keyframes glow {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+    }
+
+    h1 {
+      color: #ff4b6e;
+      margin-bottom: 1rem;
+      font-size: 2em;
+    }
+
+    .question {
+      font-size: 1.5em;
+      color: #333;
+      margin: 2rem 0;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      padding: 15px 30px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1.2em;
+      transition: all 0.3s ease;
+    }
+
+    .btn-yes {
+      background: #ff4b6e;
+      color: white;
+      min-width: 100px;
+    }
+
+    .btn-no {
+      background: #999;
+      color: white;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .content {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .content.visible {
+      display: block;
+      opacity: 1;
+    }
+
+    .photo-frame {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 2rem auto;
+      max-width: 90%;
+    }
+
+    .photo {
+      flex: 1;
+      max-width: 200px;
+      height: 250px;
+      border: 8px solid white;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .photo:hover {
+      transform: scale(1.05);
+    }
+
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .photo:first-child {
+      transform: rotate(-5deg);
+    }
+
+    .photo:last-child {
+      transform: rotate(5deg);
+    }
+
+    .photo:first-child:hover {
+      transform: rotate(-5deg) scale(1.05);
+    }
+
+    .photo:last-child:hover {
+      transform: rotate(5deg) scale(1.05);
+    }
+
+    .photo::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(120deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 50%);
+      pointer-events: none;
+    }
+
+    .message-content {
+      font-size: 1.2em;
+      line-height: 1.8;
+      color: #333;
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .message-highlight {
+      color: #ff4b6e;
+      font-weight: bold;
+      font-size: 1.3em;
+      margin: 1.5rem 0;
+    }
+
+    .message-quote {
+      font-style: italic;
+      color: #666;
+      margin: 1rem 0;
+    }
+
+    .hearts {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 20px;
+      animation: floatHeart 3s forwards;
+      opacity: 0;
+    }
+
+    @keyframes floatHeart {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .rose-petals {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .petal {
+      position: absolute;
+      font-size: 16px;
+      color: #ff4b6e;
+      animation: fallPetal 4s linear forwards;
+    }
+
+    @keyframes fallPetal {
+      0% {
+        transform: translateY(-20px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100px) rotate(360deg);
+        opacity: 0;
+      }
+      
+    }
+    .audio-player {
+      margin: 20px auto;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .audio-player.visible {
+      opacity: 1;
+    }
+
+    .music-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .music-btn {
+      background: #ff4b6e;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    .music-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .music-status {
+      color: #666;
+      font-size: 0.9em;
+      margin-top: 5px;}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="hearts"></div>
+    <div class="rose-petals"></div>
+    <div class="initial-content">
+      <h1>Happy 11 Months! 💝</h1>
+      <div class="rose-wrapper">
+        <div class="rose-glow"></div>
+        <div class="rose">🌹</div>
+      </div>
+      <div class="question">Can You Be My Valentines ?</div>
+      <div class="buttons">
+        <button class="btn btn-yes" onclick="showContent()">Yes</button>
+        <button class="btn btn-no" onmouseover="moveNo(this)" onclick="preventClick(event)">No</button>
+      </div>
+    </div>
+    
+    <div class="content" id="mainContent">
+      <h1>Mahal Kita! ❤️</h1>
+      <div class="audio-player" id="audioPlayer">
+        <div class="music-controls">
+          <button class="music-btn" onclick="togglePlay()" id="playPauseBtn">▶️</button>
+        </div>
+        <div class="music-status">Now Playing: Mac Miller - Congratulations 🎵</div>
+        <audio id="bgMusic" loop>
+          <source src="Mac Miller - Congratulations Instrumental (VIOLIN & PIANO).mp3" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+      <div class="photo-frame">
+        <div class="photo">
+          <img src="1.jpg.jpg" alt="Cute">
+        </div>
+        <div class="photo">
+          <img src="2.jpg.jpg" alt="Takoyaki Moment">
+        </div>
+      </div>
+
+      <div class="message-content">
+        <p class="message-highlight">HAPPY MONTHSARRY BABY! 💕</p>
+        
+        <p>Ikaw ang tahimik na lakas sa likod ng pagiging makulit at mapusok kong apoy. Ako ‘yung biglang sugod, ‘yung hindi mapakali, ‘yung parang laging naiinip, habang ikaw naman ‘yung laging kalmado, matibay, at parang laging may plano. Minsan naiinis ako kasi parang ang bagal mo kumilos, pero ang totoo, ikaw ‘yung dahilan kung bakit hindi ako tuluyang nauubos. Sa mundo kong laging nag-aapoy, ikaw ang tahanang bumabalot sa akin, nagpapaalala na hindi ko kailangang tumakbo palagi. Salamat sa tiyaga, sa init, sa pagiging sandalan ko kapag pagod na ako.</p>
+
+        <p class="message-quote">Ikaw ang dahilan ng aking mga ngiti,<br>
+        Ang liwanag sa aking madilim na mundo,<br>
+        Ang sagot sa aking mga dasal.</p>
+
+        <p>Salamat sa lahat ng Bersyon ng PAG-IBIG:<br>
+        - Sa mga simpleng kwentuhan natin<br>
+        - Sa mga tawanan at biruan<br>
+        - Sa mga yakap at halik<br>
+        - Sa pagiging tapat </p>
+
+        <p class="message-highlight">Mahal na mahal kita Bless, 
+        at patuloy kitang mamahalin.</p>
+
+        <p>Gaya ng liriko sa kanta ng Ben & Ben "Pipiliin ka sa Araw-araw".,  🌹</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let yesButtonSize = 1;
+    let isPlaying = false;
+    function moveNo(button) {
+      yesButtonSize += 0.15;
+      document.querySelector('.btn-yes').style.transform = `scale(${yesButtonSize})`;
+      
+      const card = document.querySelector('.card');
+      const cardRect = card.getBoundingClientRect();
+      const buttonRect = button.getBoundingClientRect();
+      
+      const maxX = cardRect.width - buttonRect.width;
+      const maxY = cardRect.height - buttonRect.height;
+      
+      const randomX = Math.random() * maxX;
+      const randomY = Math.random() * maxY;
+      
+      button.style.position = 'absolute';
+      button.style.left = `${randomX}px`;
+      button.style.top = `${randomY}px`;
+      
+      createHeart();
+      createPetal();
+    }
+    
+    function preventClick(event) {
+      event.preventDefault();
+      return false;
+    }
+    
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.innerHTML = '❤️';
+      heart.style.left = Math.random() * 100 + '%';
+      heart.style.top = Math.random() * 100 + '%';
+      
+      document.querySelector('.hearts').appendChild(heart);
+      
+      setTimeout(() => {
+        heart.remove();
+      }, 3000);
+    }
+
+    function createPetal() {
+      const petal = document.createElement('div');
+      petal.className = 'petal';
+      petal.innerHTML = '🌹';
+      petal.style.left = Math.random() * 100 + '%';
+      petal.style.transform = `rotate(${Math.random() * 360}deg)`;
+      
+      document.querySelector('.rose-petals').appendChild(petal);
+      
+      setTimeout(() => {
+        petal.remove();
+      }, 4000);
+    }
+    
+    function showContent() {
+      document.querySelector('.initial-content').style.display = 'none';
+      const content = document.getElementById('mainContent');
+      content.style.display = 'block';
+      setTimeout(() => {
+        content.classList.add('visible');
+      }, 100);
+      
+      for(let i = 0; i < 20; i++) {
+        setTimeout(() => {
+          createHeart();
+          createPetal();
+        }, i * 100);
+      }
+    }
+    function showContent() {
+      document.querySelector('.initial-content').style.display = 'none';
+      const content = document.getElementById('mainContent');
+      const audioPlayer = document.getElementById('audioPlayer');
+      content.style.display = 'block';
+      
+      setTimeout(() => {
+        content.classList.add('visible');
+        audioPlayer.classList.add('visible');
+        // Start playing music
+        playMusic();
+      }, 100);
+      
+      for(let i = 0; i < 20; i++) {
+        setTimeout(() => {
+          createHeart();
+          createPetal();
+        }, i * 100);
+      }
+    }
+
+    function playMusic() {
+      const audio = document.getElementById('bgMusic');
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      audio.play();
+      isPlaying = true;
+      playPauseBtn.innerHTML = '⏸️';
+    }
+
+    function togglePlay() {
+      const audio = document.getElementById('bgMusic');
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      
+      if (isPlaying) {
+        audio.pause();
+        playPauseBtn.innerHTML = '▶️';
+      } else {
+        audio.play();
+        playPauseBtn.innerHTML = '⏸️';
+      }
+      
+      isPlaying = !isPlaying;
+    }
+
+  </script>
+</body>
+</html>
